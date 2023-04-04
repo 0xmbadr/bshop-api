@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import slugify from 'slugify';
-import ApiError from './../utils/ApiError';
-import Category, { CategoryModel } from './../database/models/Category';
+import ApiError from '../utils/ApiError';
+import CategoryModel, { ICategory } from '../database/models/Category';
 
 // @desc    get all categories
 // @route   GET  /api/v1/categories
 // @access  Private
 export const getCategories = asyncHandler(
   async (
-    req: Request<unknown, unknown, Category, { page: number; limit: number }>,
+    req: Request<unknown, unknown, ICategory, { page: number; limit: number }>,
     res: Response,
   ) => {
     const page: number = req.query.page || 1;
@@ -30,7 +30,7 @@ export const getSingleCategory = asyncHandler(
     next: NextFunction,
   ) => {
     const { id } = req.params;
-    const category = await CategoryModel.findById(id);
+    const category: ICategory | null = await CategoryModel.findById(id);
     if (!category)
       return next(new ApiError(`No Category associated with this id`, 404));
     res.status(201).json({ data: category });
@@ -41,9 +41,9 @@ export const getSingleCategory = asyncHandler(
 // @route   POST  /api/v1/categories
 // @access  Private
 export const createCategory = asyncHandler(
-  async (req: Request<unknown, unknown, Category, unknown>, res: Response) => {
+  async (req: Request<unknown, unknown, ICategory, unknown>, res: Response) => {
     const { name } = req.body;
-    const category = await CategoryModel.create({
+    const category: ICategory = await CategoryModel.create({
       name,
       slug: slugify(name),
     });
@@ -58,7 +58,7 @@ export const updateCategory = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const { name } = req.body;
-    const category = await CategoryModel.findByIdAndUpdate(
+    const category: ICategory | null = await CategoryModel.findByIdAndUpdate(
       { _id: id },
       { name, slug: slugify(name) },
       { new: true },
@@ -73,9 +73,15 @@ export const updateCategory = asyncHandler(
 // @route   DELETE  /api/v1/categories/:id
 // @access  Private
 export const deleteCategory = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: Request<{ id: string }, {}, {}, {}>,
+    res: Response,
+    next: NextFunction,
+  ) => {
     const { id } = req.params;
-    const category = await CategoryModel.findByIdAndDelete(id);
+    const category: ICategory | null = await CategoryModel.findByIdAndDelete(
+      id,
+    );
     if (!category)
       return next(new ApiError(`No Category associated with this id`, 404));
     res.status(201).send();

@@ -1,6 +1,6 @@
 import { Document, model, Schema } from 'mongoose';
 
-export default interface Category extends Document {
+export interface ICategory extends Document {
   name: string;
   slug: string;
   image?: string;
@@ -9,7 +9,7 @@ export default interface Category extends Document {
 export const DOCUMENT_NAME = 'Category';
 export const COLLECTION_NAME = 'categories';
 
-const schema = new Schema(
+const CategorySchema = new Schema(
   {
     name: {
       type: Schema.Types.String,
@@ -32,8 +32,10 @@ const schema = new Schema(
   },
 );
 
-export const CategoryModel = model<Category>(
+const CategoryModel = model<ICategory>(
   DOCUMENT_NAME,
-  schema,
+  CategorySchema,
   COLLECTION_NAME,
 );
+
+export default CategoryModel;

@@ -4,6 +4,7 @@ import './database'; // ! DB initalization
 import { env } from './config';
 
 import CategoryRoutes from './routes/CategoryRoutes';
+import SubCategoryRoutes from './routes/SubCategoryRoutes';
 import ApiError from './utils/ApiError';
 const app = express();
 
@@ -16,11 +17,9 @@ app.use(
   express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }),
 );
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello world');
-});
-
+// ROUTES
 app.use('/api/v1/categories', CategoryRoutes);
+app.use('/api/v1/subcategories', SubCategoryRoutes);
 
 app.all('*', (req, res, next) => {
   next(new ApiError(`This Route doesn't exist`, 400));
