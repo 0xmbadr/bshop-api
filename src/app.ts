@@ -4,6 +4,7 @@ import './database'; // ! DB initalization
 import { env } from './config';
 
 import CategoryRoutes from './routes/CategoryRoutes';
+import ApiError from './utils/ApiError';
 const app = express();
 
 // MIDDLEWARES
@@ -20,5 +21,9 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/v1/categories', CategoryRoutes);
+
+app.all('*', (req, res, next) => {
+  next(new ApiError(`This Route doesn't exist`, 400));
+});
 
 export default app;

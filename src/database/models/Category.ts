@@ -13,7 +13,7 @@ const schema = new Schema(
   {
     name: {
       type: Schema.Types.String,
-      required: [true, 'Category name is required!'],
+      required: [true, 'Category name is required!!!'],
       unique: [true, 'Cateogry name must be unique!'],
       minlength: [3, 'Too short Category name'],
       maxlength: [32, 'Too long Category name'],
