@@ -5,6 +5,7 @@ import { env } from './config';
 
 import CategoryRoutes from './routes/CategoryRoutes';
 import SubCategoryRoutes from './routes/SubCategoryRoutes';
+import BrandsRoutes from './routes/BrandRoutes';
 import ApiError from './utils/ApiError';
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(
 // ROUTES
 app.use('/api/v1/categories', CategoryRoutes);
 app.use('/api/v1/subcategories', SubCategoryRoutes);
+app.use('/api/v1/brands', BrandsRoutes);
 
 app.all('*', (req, res, next) => {
   next(new ApiError(`This Route doesn't exist`, 400));
