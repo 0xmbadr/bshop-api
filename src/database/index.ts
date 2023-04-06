@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { db } from '../config';
 
 // Build the connection string
-const DB_URI = `mongodb://${db.host}:${db.port}/${db.name}`;
+export const DB_URI = `mongodb://${db.host}:${db.port}/${db.name}`;
 
 // Create the database connection
 mongoose
