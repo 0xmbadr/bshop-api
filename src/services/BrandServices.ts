@@ -1,82 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
-import asyncHandler from 'express-async-handler';
-import slugify from 'slugify';
-import ApiError from '../utils/ApiError';
-import ApiFeatures from '../utils/ApiFeatures';
-import BrandModel, { IBrand } from '../database/models/Brand';
+import BrandModel from '../database/models/Brand';
+import Factory from './ModelServices';
 
-export const getBrands = asyncHandler(
-  async (
-    req: Request<unknown, unknown, IBrand, { page: number; limit: number }>,
-    res: Response,
-  ) => {
-    const documentCounts = await BrandModel.countDocuments();
-    const apiFeatures = new ApiFeatures(BrandModel.find(), req.query)
-      .paginate(documentCounts)
-      .filter()
-      .search('Brand')
-      .limitFields()
-      .sort();
+export const getBrands = Factory.getAll(BrandModel, 'Brand');
 
-    const { mongooseQuery, paginationResult } = apiFeatures;
-    const brands = await mongooseQuery;
+export const getSingleBrand = Factory.getOne(BrandModel);
 
-    res
-      .status(201)
-      .json({ result: brands.length, paginationResult, data: brands });
-  },
-);
+export const createBrand = Factory.createOne(BrandModel);
 
-export const getSingleBrand = asyncHandler(
-  async (
-    req: Request<{ id: string }, unknown, unknown, unknown>,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    const { id } = req.params;
-    const brand: IBrand | null = await BrandModel.findById(id);
-    if (!brand)
-      return next(new ApiError(`No Brand associated with this id`, 404));
-    res.status(201).json({ data: brand });
-  },
-);
+export const updateBrand = Factory.updateOne(BrandModel);
 
-export const createBrand = asyncHandler(
-  async (req: Request<unknown, unknown, IBrand, unknown>, res: Response) => {
-    const { name } = req.body;
-    const brand: IBrand = await BrandModel.create({
-      name,
-      slug: slugify(name),
-    });
-    res.status(201).json({ data: brand });
-  },
-);
-
-export const updateBrand = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-    const { name } = req.body;
-    const brand: IBrand | null = await BrandModel.findByIdAndUpdate(
-      { _id: id },
-      { name, slug: slugify(name) },
-      { new: true },
-    );
-    if (!brand)
-      return next(new ApiError(`No Brand associated with this id`, 404));
-    res.status(201).json({ data: brand });
-  },
-);
-
-export const deleteBrand = asyncHandler(
-  async (
-    req: Request<{ id: string }, {}, {}, {}>,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    const { id } = req.params;
-    const brand: IBrand | null = await BrandModel.findByIdAndDelete(id);
-    if (!brand)
-      return next(new ApiError(`No Brand associated with this id`, 404));
-    res.status(201).send();
-  },
-);
+export const deleteBrand = Factory.deleteOne(BrandModel);

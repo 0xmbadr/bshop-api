@@ -89,6 +89,14 @@ const ProductSchema = new Schema(
   { timestamps: true },
 );
 
+ProductSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'category',
+    select: 'name -__id',
+  });
+  next();
+});
+
 const ProductModel = model<IProduct>('Product', ProductSchema, 'products');
 
 export default ProductModel;

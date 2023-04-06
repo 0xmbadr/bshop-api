@@ -1,9 +1,14 @@
-import { Document } from 'mongoose';
-
+interface IPagination {
+  currentPage?: number;
+  limit?: number;
+  numberOfPages?: number;
+  next?: number;
+  prev?: number;
+}
 export default class ApiFeatures {
   mongooseQuery: any;
   queryString: any;
-  paginationResult = {};
+  paginationResult: IPagination = {};
   constructor(mongooseQuery: any, queryString: any) {
     this.mongooseQuery = mongooseQuery;
     this.queryString = queryString;
@@ -63,13 +68,7 @@ export default class ApiFeatures {
     const skip = (page - 1) * limit;
     const endIndex = page * limit; // 2 * 10 = 20
 
-    const pagination = {} as {
-      currentPage: number;
-      limit: number;
-      numberOfPages: number;
-      next: number;
-      prev: number;
-    };
+    const pagination = {} as IPagination;
     pagination.currentPage = page;
     pagination.limit = limit;
     pagination.numberOfPages = Math.ceil(documentCounts / limit);
