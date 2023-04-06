@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import slugify from 'slugify';
 import ApiError from '../utils/ApiError';
+import ApiFeatures from '../utils/ApiFeatures';
 import BrandModel, { IBrand } from '../database/models/Brand';
 
 export const getBrands = asyncHandler(
@@ -9,11 +10,20 @@ export const getBrands = asyncHandler(
     req: Request<unknown, unknown, IBrand, { page: number; limit: number }>,
     res: Response,
   ) => {
-    const page: number = req.query.page || 1;
-    const limit: number = req.query.limit || 5;
-    const skip = (page - 1) * limit;
-    const brands = await BrandModel.find({}).skip(skip).limit(limit);
-    res.status(201).json({ result: brands.length, data: brands });
+    const documentCounts = await BrandModel.countDocuments();
+    const apiFeatures = new ApiFeatures(BrandModel.find(), req.query)
+      .paginate(documentCounts)
+      .filter()
+      .search('Brand')
+      .limitFields()
+      .sort();
+
+    const { mongooseQuery, paginationResult } = apiFeatures;
+    const brands = await mongooseQuery;
+
+    res
+      .status(201)
+      .json({ result: brands.length, paginationResult, data: brands });
   },
 );
 

@@ -2,27 +2,31 @@ import { NextFunction, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import slugify from 'slugify';
 import ApiError from '../utils/ApiError';
+import ApiFeatures from '../utils/ApiFeatures';
 import CategoryModel, { ICategory } from '../database/models/Category';
 
-// @desc    get all categories
-// @route   GET  /api/v1/categories
-// @access  Private
 export const getCategories = asyncHandler(
   async (
     req: Request<unknown, unknown, ICategory, { page: number; limit: number }>,
     res: Response,
   ) => {
-    const page: number = req.query.page || 1;
-    const limit: number = req.query.limit || 5;
-    const skip = (page - 1) * limit;
-    const categories = await CategoryModel.find({}).skip(skip).limit(limit);
-    res.status(201).json({ result: categories.length, data: categories });
+    const documentCounts = await CategoryModel.countDocuments();
+    const apiFeatures = new ApiFeatures(CategoryModel.find(), req.query)
+      .paginate(documentCounts)
+      .filter()
+      .search('Category')
+      .limitFields()
+      .sort();
+
+    const { mongooseQuery, paginationResult } = apiFeatures;
+    const categories = await mongooseQuery;
+
+    res
+      .status(201)
+      .json({ result: categories.length, paginationResult, data: categories });
   },
 );
 
-// @desc    get single categories
-// @route   GET  /api/v1/categories/:id
-// @access  Private
 export const getSingleCategory = asyncHandler(
   async (
     req: Request<{ id: string }, unknown, unknown, unknown>,

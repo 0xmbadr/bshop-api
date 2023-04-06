@@ -2,59 +2,27 @@
 import { NextFunction, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import slugify from 'slugify';
+import ApiFeatures from './../utils/ApiFeatures';
 import ApiError from '../utils/ApiError';
 import ProductModel, { IProduct } from './../database/models/Product';
 
 export const getProducts = asyncHandler(async (req: Request, res: Response) => {
-  // Filteration
-  const queryStringObj = { ...req.query };
-  const excludedFields = ['page', 'sort', 'limit', 'fields', 'keyword'];
-  excludedFields.forEach((field) => delete queryStringObj[field]);
-  let queryStr = JSON.stringify(queryStringObj);
-  queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-
-  // Pagination
-  const page = req.query.page || 1;
-  const limit = req.query.limit || 5;
-  const skip = (page - 1) * limit;
-
-  // Build Query
-
-  let mongooseQuery = ProductModel.find(JSON.parse(queryStr))
-    .skip(skip)
-    .limit(limit)
-    .populate({ path: 'category', select: 'name -_id' });
-
-  // Sorting
-  if (req.query.sort) {
-    const sortBy = req.query.sort.split(',').join(' ');
-
-    mongooseQuery = mongooseQuery.sort(sortBy);
-  } else {
-    mongooseQuery = mongooseQuery.sort('-createdAt');
-  }
-
-  // Limiting Fields
-  if (req.query.fields) {
-    const fields = req.query.fields.split(',').join(' ');
-    mongooseQuery = mongooseQuery.select(fields);
-  } else {
-    mongooseQuery = mongooseQuery.select('-__v');
-  }
-
-  // search
-  if (req.query.keyword) {
-    const query = [
-      { title: { $regex: req.query.keyword, $options: 'i' } },
-      { description: { $regex: req.q, $options: 'i' } },
-    ];
-    mongooseQuery = mongooseQuery.or(query);
-  }
+  const documentCounts = await ProductModel.countDocuments();
+  const apiFeatures = new ApiFeatures(ProductModel.find(), req.query)
+    .paginate(documentCounts)
+    .filter()
+    .search('Product')
+    .limitFields()
+    .sort();
+  // .populate({ path: 'category', select: 'name -_id' });
 
   // Execute query
+  const { mongooseQuery, paginationResult } = apiFeatures;
   const products = await mongooseQuery;
 
-  res.status(201).json({ result: products.length, data: products });
+  res
+    .status(201)
+    .json({ result: products.length, paginationResult, data: products });
 });
 
 export const getSingleProdcut = asyncHandler(

@@ -6,6 +6,7 @@ import SubCategoryModel, {
 import { ICategory } from './../database/models/Category';
 import slugify from 'slugify';
 import ApiError from './../utils/ApiError';
+import ApiFeatures from './../utils/ApiFeatures';
 
 // ! Nest Route
 // GET /api/v1/categories/:categoryId/subcategories
@@ -26,15 +27,33 @@ export const getSubCategories = asyncHandler(
     req: Request<{}, unknown, {}, { page: number; limit: number }>,
     res: Response,
   ) => {
-    const page: number = req.query.page || 1;
-    const limit: number = req.query.limit || 5;
-    const skip = (page - 1) * limit;
-    // @ts-ignore
-    const subcategories = await SubCategoryModel.find(req.filterObj)
-      .skip(skip)
-      .limit(limit);
-    res.status(201).json({ result: subcategories.length, data: subcategories });
+    const documentCounts = await SubCategoryModel.countDocuments();
+    const apiFeatures = new ApiFeatures(SubCategoryModel.find(), req.query)
+      .paginate(documentCounts)
+      .filter()
+      .search('SubCategory')
+      .limitFields()
+      .sort();
+
+    const { mongooseQuery, paginationResult } = apiFeatures;
+    const subcategories = await mongooseQuery;
+
+    res
+      .status(201)
+      .json({
+        result: subcategories.length,
+        paginationResult,
+        data: subcategories,
+      });
   },
+  // const page: number = req.query.page || 1;
+  // const limit: number = req.query.limit || 5;
+  // const skip = (page - 1) * limit;
+  // const subcategories = await SubCategoryModel.find(req.filterObj)
+  //   .skip(skip)
+  //   .limit(limit);
+  // res.status(201).json({ result: subcategories.length, data: subcategories });
+  // }
 );
 
 export const getSingleSubCategory = asyncHandler(
