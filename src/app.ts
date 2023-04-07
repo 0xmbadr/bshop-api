@@ -22,7 +22,6 @@ app.use(
   express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }),
 );
 app.use(express.static(path.join(__dirname, 'uploads/')));
-console.log(path.join(__dirname, 'uploads'));
 
 // ROUTES
 app.use('/api/v1/categories', CategoryRoutes);

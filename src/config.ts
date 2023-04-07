@@ -6,3 +6,4 @@ export const db = {
   host: process.env.DB_HOST || '',
   port: process.env.DB_PORT || '',
 };
+export const BASE_URL = process.env.BASE_URL || `http://localhost:${port}`;

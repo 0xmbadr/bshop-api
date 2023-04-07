@@ -1,4 +1,5 @@
 import { Document, model, Schema } from 'mongoose';
+import { BASE_URL } from '../../config';
 
 export interface ICategory extends Document {
   name: string;
@@ -31,6 +32,22 @@ const CategorySchema = new Schema(
     versionKey: false,
   },
 );
+
+const setImageUrl = (doc: any) => {
+  if (doc.image) {
+    const imageUrl = `${BASE_URL}/categories/${doc.image}`;
+    doc.image = imageUrl;
+  }
+};
+
+// works in findOne, findAll, update
+CategorySchema.post('init', (doc) => {
+  setImageUrl(doc);
+});
+// works in create
+CategorySchema.post('save', (doc) => {
+  setImageUrl(doc);
+});
 
 const CategoryModel = model<ICategory>(
   DOCUMENT_NAME,

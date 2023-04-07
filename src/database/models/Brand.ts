@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { BASE_URL } from '../../config';
 
 export interface IBrand extends Document {
   name: string;
@@ -24,6 +25,21 @@ const BrandSchema = new Schema(
   { timestamps: true },
 );
 
+const setImageUrl = (doc: any) => {
+  if (doc.image) {
+    const imageUrl = `${BASE_URL}/brands/${doc.image}`;
+    doc.image = imageUrl;
+  }
+};
+
+// works in findOne, findAll, update
+BrandSchema.post('init', (doc) => {
+  setImageUrl(doc);
+});
+// works in create
+BrandSchema.post('save', (doc) => {
+  setImageUrl(doc);
+});
 const BrandModel = model<IBrand>('Brand', BrandSchema, 'brands');
 
 export default BrandModel;

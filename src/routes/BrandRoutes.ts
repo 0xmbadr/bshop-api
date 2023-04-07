@@ -10,16 +10,21 @@ import {
   deleteBrand,
   getBrands,
   getSingleBrand,
+  resizeImage,
   updateBrand,
+  uploadBrandImage,
 } from '../services/BrandServices';
 
 const router = express.Router();
 
-router.route('/').get(getBrands).post(createBrandValdiator, createBrand);
+router
+  .route('/')
+  .get(getBrands)
+  .post(uploadBrandImage, resizeImage, createBrandValdiator, createBrand);
 router
   .route('/:id')
   .get(getBrandValidator, getSingleBrand)
-  .put(updateBrandValidator, updateBrand)
+  .put(uploadBrandImage, resizeImage, updateBrandValidator, updateBrand)
   .delete(deleteBrandValidator, deleteBrand);
 
 export default router;
