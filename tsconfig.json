@@ -13,9 +13,9 @@
         "sourceMap": true,
         "outDir": "build",
         "baseUrl": ".",
-        "paths": {
-            "*": [ "src/types/*"]
-        }
+        // "paths": {
+        //     "*": [ "src/types/*"]
+        // }
     },
     "include": ["src/**/*"],
     "exclude": [".templates"]
