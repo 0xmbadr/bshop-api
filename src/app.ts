@@ -1,14 +1,16 @@
-import express, { Request, Response } from 'express';
+import path from 'path';
+
+import express from 'express';
 import morgan from 'morgan';
-import './database'; // ! DB initalization
-import { env } from './config';
 
 import CategoryRoutes from './routes/CategoryRoutes';
 import SubCategoryRoutes from './routes/SubCategoryRoutes';
 import BrandsRoutes from './routes/BrandRoutes';
 import ProductRoutes from './routes/ProductRoutes';
-
 import ApiError from './utils/ApiError';
+
+import './database'; // ! DB initalization
+import { env } from './config';
 const app = express();
 
 // MIDDLEWARES
@@ -19,6 +21,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use(
   express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }),
 );
+app.use(express.static(path.join(__dirname, 'uploads/')));
+console.log(path.join(__dirname, 'uploads'));
 
 // ROUTES
 app.use('/api/v1/categories', CategoryRoutes);

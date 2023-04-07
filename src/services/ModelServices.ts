@@ -39,6 +39,7 @@ const updateOne = (Model) =>
 // @ts-ignore
 const createOne = (Model) =>
   asyncHandler(async (req: Request, res: Response) => {
+    // create method ignores any field that doesn't exist in the schema
     const doc = await Model.create(req.body);
     res.status(201).json({ data: doc });
   });
