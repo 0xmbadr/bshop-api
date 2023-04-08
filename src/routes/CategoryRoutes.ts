@@ -15,15 +15,18 @@ import {
   updateCategory,
   uploadCategoryImage,
 } from '../services/CategoryServices';
+import { protect } from '../services/AuthServices';
 
 const router = express.Router();
 
+// Nested Route
 router.use('/:categoryId/subcategories', SubCategoryRoutes);
 
 router
   .route('/')
   .get(getCategories)
   .post(
+    protect,
     uploadCategoryImage,
     resizeImage,
     createCategoryValidator,
