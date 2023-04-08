@@ -8,6 +8,7 @@ import SubCategoryRoutes from './routes/SubCategoryRoutes';
 import BrandsRoutes from './routes/BrandRoutes';
 import ProductRoutes from './routes/ProductRoutes';
 import UserRoutes from './routes/UserRoutes';
+import AuthRoutes from './routes/AuthRoutes';
 import ApiError from './utils/ApiError';
 
 import './database'; // ! DB initalization
@@ -30,6 +31,7 @@ app.use('/api/v1/subcategories', SubCategoryRoutes);
 app.use('/api/v1/brands', BrandsRoutes);
 app.use('/api/v1/products', ProductRoutes);
 app.use('/api/v1/users', UserRoutes);
+app.use('/api/v1/auth', AuthRoutes);
 
 app.all('*', (req, res, next) => {
   next(new ApiError(`This Route doesn't exist`, 400));

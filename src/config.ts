@@ -7,3 +7,6 @@ export const db = {
   port: process.env.DB_PORT || '',
 };
 export const BASE_URL = process.env.BASE_URL || `http://localhost:${port}`;
+
+export const JWT_SECRET = process.env.JWT_SECRET;
+export const JWT_EXPIRE_TIME = process.env.JWT_EXPIRE_TIME;
