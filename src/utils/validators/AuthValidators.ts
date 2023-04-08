@@ -3,7 +3,7 @@ import slugify from 'slugify';
 import UserModel from '../../database/models/User';
 import validatorMiddleware from '../../middlewares/ValidatorMiddleware';
 
-export const signUpValidator = [
+export const signupValidator = [
   check('name')
     .notEmpty()
     .withMessage('User name required')
@@ -42,5 +42,19 @@ export const signUpValidator = [
   check('passwordConfirm')
     .notEmpty()
     .withMessage('Password confirmation required'),
+  validatorMiddleware,
+];
+
+export const loginValidator = [
+  check('email')
+    .notEmpty()
+    .withMessage('Email required')
+    .isEmail()
+    .withMessage('Invalid email address'),
+  check('password')
+    .notEmpty()
+    .withMessage('Password required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters'),
   validatorMiddleware,
 ];

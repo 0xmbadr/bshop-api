@@ -1,9 +1,13 @@
 import express from 'express';
-import { signUpValidator } from '../utils/validators/AuthValidators';
-import { signup } from '../services/AuthServices';
+import {
+  loginValidator,
+  signupValidator,
+} from '../utils/validators/AuthValidators';
+import { login, signup } from '../services/AuthServices';
 const router = express.Router();
 
-router.route('/signup').post(signUpValidator, signup);
+router.route('/signup').post(signupValidator, signup);
+router.route('/login').post(loginValidator, login);
 // router
 //   .route('/:id')
 //   .get(getUserValidator, getSingleUser)
