@@ -5,15 +5,10 @@ import asyncHandler from 'express-async-handler';
 import UserModel from '../database/models/User';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { JWT_EXPIRE_TIME, JWT_SECRET } from '../config';
 import ApiError from '../utils/ApiError';
-import { Types } from 'mongoose';
 import sendEmail from '../utils/sendEmail';
-
-const generateToken = (payload: Types.ObjectId) =>
-  jwt.sign({ user_id: payload }, JWT_SECRET as string, {
-    expiresIn: JWT_EXPIRE_TIME,
-  });
+import { generateToken } from '../utils/generateToken';
+import { JWT_SECRET } from '../config';
 
 export const signup = asyncHandler(async (req: Request, res: Response) => {
   // * Create User
