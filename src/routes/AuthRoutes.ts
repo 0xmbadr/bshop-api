@@ -3,15 +3,19 @@ import {
   loginValidator,
   signupValidator,
 } from '../utils/validators/AuthValidators';
-import { login, signup } from '../services/AuthServices';
+import {
+  forgetPassword,
+  login,
+  resetPassword,
+  signup,
+  verifyResetCode,
+} from '../services/AuthServices';
 const router = express.Router();
 
-router.route('/signup').post(signupValidator, signup);
-router.route('/login').post(loginValidator, login);
-// router
-//   .route('/:id')
-//   .get(getUserValidator, getSingleUser)
-//   .put(uploadUserImage, resizeImage, updateUserValidator, updateUser)
-//   .delete(deleteUserValidator, deleteUser);
+router.post('/signup', signupValidator, signup);
+router.post('/login', loginValidator, login);
+router.post('/forgetPassword', forgetPassword);
+router.post('/verifyPassword', verifyResetCode);
+router.put('/resetPassword', resetPassword);
 
 export default router;

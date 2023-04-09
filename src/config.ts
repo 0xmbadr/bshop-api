@@ -10,3 +10,12 @@ export const BASE_URL = process.env.BASE_URL || `http://localhost:${port}`;
 
 export const JWT_SECRET = process.env.JWT_SECRET;
 export const JWT_EXPIRE_TIME = process.env.JWT_EXPIRE_TIME;
+
+export const EMAIL = {
+  HOST: process.env.EMAIL_HOST,
+  PORT: process.env.EMAIL_PORT,
+  AUTH: {
+    USER: process.env.EMAIL_AUTH_USER,
+    PASS: process.env.EMAIL_AUTH_PASS,
+  },
+};
