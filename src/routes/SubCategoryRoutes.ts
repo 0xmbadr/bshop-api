@@ -14,17 +14,34 @@ import {
   setCategoryIdToBody,
   updateSubCategory,
 } from './../services/SubCategoryServices';
+import { protect, allowedTo } from '../services/AuthServices';
 
 const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .post(setCategoryIdToBody, createSubCategoryValidator, createSubCategory)
+  .post(
+    protect,
+    allowedTo('manager', 'admin'),
+    setCategoryIdToBody,
+    createSubCategoryValidator,
+    createSubCategory,
+  )
   .get(createFilterObj, getSubCategories);
 router
   .route('/:id')
   .get(getSubCategoryValidator, getSingleSubCategory)
-  .put(updateSubCategoryValidator, updateSubCategory)
-  .delete(deleteSubCategoryValidator, deleteSubCategory);
+  .put(
+    protect,
+    allowedTo('manager', 'admin'),
+    updateSubCategoryValidator,
+    updateSubCategory,
+  )
+  .delete(
+    protect,
+    allowedTo('admin'),
+    deleteSubCategoryValidator,
+    deleteSubCategory,
+  );
 
 export default router;

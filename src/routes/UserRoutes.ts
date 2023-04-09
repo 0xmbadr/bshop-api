@@ -16,6 +16,7 @@ import {
   updateUser,
   uploadUserImage,
 } from '../services/UserServices';
+import { allowedTo, protect } from '../services/AuthServices';
 
 const router = express.Router();
 
@@ -27,12 +28,26 @@ router.put(
 
 router
   .route('/')
-  .get(getUsers)
-  .post(uploadUserImage, resizeImage, createUserValidator, createUser);
+  .get(protect, allowedTo('admin'), getUsers)
+  .post(
+    protect,
+    allowedTo('admin'),
+    uploadUserImage,
+    resizeImage,
+    createUserValidator,
+    createUser,
+  );
 router
   .route('/:id')
-  .get(getUserValidator, getSingleUser)
-  .put(uploadUserImage, resizeImage, updateUserValidator, updateUser)
-  .delete(deleteUserValidator, deleteUser);
+  .get(protect, allowedTo('admin'), getUserValidator, getSingleUser)
+  .put(
+    protect,
+    allowedTo('admin'),
+    uploadUserImage,
+    resizeImage,
+    updateUserValidator,
+    updateUser,
+  )
+  .delete(protect, allowedTo('admin'), deleteUserValidator, deleteUser);
 
 export default router;

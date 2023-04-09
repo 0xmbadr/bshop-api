@@ -16,6 +16,7 @@ import {
   uploadProductImages,
   resizeProductImages,
 } from '../services/ProdcutServices';
+import { allowedTo, protect } from '../services/AuthServices';
 
 const router = express.Router();
 
@@ -23,6 +24,8 @@ router
   .route('/')
   .get(getProducts)
   .post(
+    protect,
+    allowedTo('manager', 'admin'),
     uploadProductImages,
     resizeProductImages,
     createProductValidator,
@@ -32,11 +35,13 @@ router
   .route('/:id')
   .get(getProductValidator, getSingleProdcut)
   .put(
+    protect,
+    allowedTo('manager', 'admin'),
     uploadProductImages,
     resizeProductImages,
     updateProductValidator,
     updateProduct,
   )
-  .delete(deleteProductValidator, deleteProduct);
+  .delete(protect, allowedTo('admin'), deleteProductValidator, deleteProduct);
 
 export default router;

@@ -37,11 +37,18 @@ router
   .route('/:id')
   .get(getCategoryValidator, getSingleCategory)
   .put(
+    protect,
+    allowedTo('manager', 'admin'),
     uploadCategoryImage,
     resizeImage,
     updateCategoryValidator,
     updateCategory,
   )
-  .delete(deleteCategoryValidator, deleteCategory);
+  .delete(
+    protect,
+    allowedTo('manager', 'admin'),
+    deleteCategoryValidator,
+    deleteCategory,
+  );
 
 export default router;
