@@ -15,7 +15,7 @@ import {
   updateCategory,
   uploadCategoryImage,
 } from '../services/CategoryServices';
-import { protect } from '../services/AuthServices';
+import { allowedTo, protect } from '../services/AuthServices';
 
 const router = express.Router();
 
@@ -27,6 +27,7 @@ router
   .get(getCategories)
   .post(
     protect,
+    allowedTo('manager', 'admin'),
     uploadCategoryImage,
     resizeImage,
     createCategoryValidator,
