@@ -10,15 +10,23 @@ import {
   deleteReview,
   getReview,
   getReviews,
+  setProductIdAndUserIdToBody,
   updateReview,
 } from '../services/ReviewServices';
+import { createFilterObj } from '../services/ReviewServices';
 
 const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .get(getReviews)
-  .post(protect, allowedTo('user'), createReviewValidator, createReview);
+  .get(createFilterObj, getReviews)
+  .post(
+    protect,
+    allowedTo('user'),
+    setProductIdAndUserIdToBody,
+    createReviewValidator,
+    createReview,
+  );
 router
   .route('/:id')
   .get(getReview)

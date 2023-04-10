@@ -16,6 +16,9 @@ const deleteOne = (Model) =>
 
       if (!doc)
         return next(new ApiError(`No document associated with this id`, 404));
+
+      // Trigger "remove" event when update document
+      document.remove();
       res.status(201).send();
     },
   );
@@ -32,6 +35,9 @@ const updateOne = (Model) =>
       });
       if (!doc)
         return next(new ApiError(`No doc associated with this id`, 404));
+
+      // Trigger "save" event when update document
+      document.save();
       res.status(201).json({ data: doc });
     },
   );
@@ -70,7 +76,6 @@ const getAll = (Model, ModelName) =>
       filter = req.filterObj;
     }
     const documentCounts = await Model.countDocuments();
-    const Products = await Model.find({});
 
     const apiFeatures = new ApiFeatures(Model.find(filter), req.query)
       .paginate(documentCounts)

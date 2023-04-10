@@ -17,8 +17,11 @@ import {
   resizeProductImages,
 } from '../services/ProdcutServices';
 import { allowedTo, protect } from '../services/AuthServices';
+import ReviewRoutes from './ReviewRoutes';
 
 const router = express.Router();
+
+router.use('/:productId/reviews', ReviewRoutes);
 
 router
   .route('/')
