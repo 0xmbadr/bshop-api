@@ -54,7 +54,7 @@ export const resizeProductImages = asyncHandler(async (req, res, next) => {
 
 export const getProducts = Factory.getAll(ProductModel, 'Product');
 
-export const getSingleProdcut = Factory.getOne(ProductModel);
+export const getSingleProdcut = Factory.getOne(ProductModel, 'reviews');
 
 export const createProduct = Factory.createOne(ProductModel);
 

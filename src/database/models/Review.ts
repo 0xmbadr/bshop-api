@@ -29,7 +29,9 @@ const reviewSchema = new mongoose.Schema(
       required: [true, 'Review must belong to product'],
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  },
 );
 
 const Review = model<IReview>('Review', reviewSchema, 'reviews');
