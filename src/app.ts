@@ -10,6 +10,8 @@ import ProductRoutes from './routes/ProductRoutes';
 import UserRoutes from './routes/UserRoutes';
 import AuthRoutes from './routes/AuthRoutes';
 import ReviewRoutes from './routes/ReviewRoutes';
+import wishlistRoutes from './routes/wishlistRoutes';
+
 import ApiError from './utils/ApiError';
 
 import './database'; // ! DB initalization
@@ -34,6 +36,7 @@ app.use('/api/v1/products', ProductRoutes);
 app.use('/api/v1/users', UserRoutes);
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/reviews', ReviewRoutes);
+app.use('/api/v1/wishlist', wishlistRoutes);
 
 app.all('*', (req, res, next) => {
   next(new ApiError(`This Route doesn't exist`, 400));

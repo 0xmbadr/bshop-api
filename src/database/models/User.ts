@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
 import bcrypt from 'bcryptjs';
 export interface IUser {
   name: string;
@@ -49,6 +49,13 @@ const UserSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    // Child ref => when small num expected
+    wishlist: [
+      {
+        type: Types.ObjectId,
+        ref: 'Product',
+      },
+    ],
   },
   { timestamps: true },
 );
