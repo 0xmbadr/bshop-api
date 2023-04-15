@@ -3,14 +3,7 @@ import path from 'path';
 import express from 'express';
 import morgan from 'morgan';
 
-import CategoryRoutes from './routes/CategoryRoutes';
-import SubCategoryRoutes from './routes/SubCategoryRoutes';
-import BrandsRoutes from './routes/BrandRoutes';
-import ProductRoutes from './routes/ProductRoutes';
-import UserRoutes from './routes/UserRoutes';
-import AuthRoutes from './routes/AuthRoutes';
-import ReviewRoutes from './routes/ReviewRoutes';
-import wishlistRoutes from './routes/wishlistRoutes';
+import mountRoutes from './routes';
 
 import ApiError from './utils/ApiError';
 
@@ -29,14 +22,7 @@ app.use(
 app.use(express.static(path.join(__dirname, 'uploads/')));
 
 // ROUTES
-app.use('/api/v1/categories', CategoryRoutes);
-app.use('/api/v1/subcategories', SubCategoryRoutes);
-app.use('/api/v1/brands', BrandsRoutes);
-app.use('/api/v1/products', ProductRoutes);
-app.use('/api/v1/users', UserRoutes);
-app.use('/api/v1/auth', AuthRoutes);
-app.use('/api/v1/reviews', ReviewRoutes);
-app.use('/api/v1/wishlist', wishlistRoutes);
+mountRoutes(app);
 
 app.all('*', (req, res, next) => {
   next(new ApiError(`This Route doesn't exist`, 400));
